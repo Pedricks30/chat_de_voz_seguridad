@@ -1,6 +1,7 @@
 streamlit
+streamlit-webrtc
 speechrecognition
-pyttsx3
+pydub
+gTTS
 requests
 python-dotenv
-pyaudio

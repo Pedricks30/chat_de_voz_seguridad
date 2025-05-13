@@ -1,73 +1,99 @@
-import streamlit as st 
+import streamlit as st
+from streamlit_mic_recorder import speech_to_text
 from dotenv import load_dotenv
-from src.voz import hablar, escuchar_microfono
+from src.voz import generar_audio
 from src.ia import consultar_ia
+import os
+import base64
+import uuid
 
 load_dotenv()
 
+# Configuración de página
 st.set_page_config(page_title="Chatbot de Voz", page_icon="🧠")
-st.title("🧠 Especialista en la Seguridad Industrial")
+st.title("🧠 Especialista en Seguridad Industrial")
 
-# Estilos CSS
-st.markdown("""
-<style>
-.chat-message {
-    padding: 10px 15px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    max-width: 80%;
-    word-wrap: break-word;
-    font-size: 16px;
-}
-.chat-user {
-    background-color: #ffe3e3;
-    color: #333;
-    align-self: flex-start;
-    border-left: 5px solid #ff6b6b;
-}
-.chat-ai {
-    background-color: #fff3cd;
-    color: #333;
-    align-self: flex-end;
-    border-left: 5px solid #ffc107;
-}
-.chat-container {
-    display: flex;
-    flex-direction: column;
-}
-.custom-button {
-    background-color: transparent;
-    border: none;
-    padding: 0;
-}
-</style>
-""", unsafe_allow_html=True)
-
-# Inicializar historial
+# Inicialización de estado
 if "historial" not in st.session_state:
     st.session_state.historial = []
+if "last_audio_id" not in st.session_state:
+    st.session_state.last_audio_id = ""
 
-# Verificar si el botón fue presionado
-if st.session_state.get("hablar") or st.button("🎙️ Hablar", use_container_width=True):
-    pregunta = escuchar_microfono()
-    if pregunta:
-        with st.spinner("Pensando..."):
-            respuesta = consultar_ia(pregunta)
+# Función para autoplay
+def autoplay_audio(file_path: str):
+    audio_id = f"audio_{str(uuid.uuid4())}"
+    st.session_state.last_audio_id = audio_id
+    
+    with open(file_path, "rb") as f:
+        data = f.read()
+        b64 = base64.b64encode(data).decode()
+        md = f"""
+            <audio id="{audio_id}" autoplay style="display:none">
+            <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
+            </audio>
+            <script>
+                var audio = document.getElementById("{audio_id}");
+                audio.play().catch(e => console.log("Autoplay prevented:", e));
+            </script>
+            """
+        st.components.v1.html(md, height=0)
 
-        hablar(respuesta)
-        st.session_state.historial.append(("👤", pregunta))
-        st.session_state.historial.append(("🤖", respuesta))
-    else:
-        st.warning("No se detectó una pregunta. Intenta de nuevo.")
+# Interfaz de usuario
+st.subheader("🎤 Haz tu pregunta por voz")
 
-# Mostrar historial con estilo tipo chat
+# Widget de reconocimiento de voz
+pregunta = speech_to_text(
+    language='es',
+    start_prompt="🎙️ Presiona para hablar",
+    stop_prompt="🛑 Detener grabación",
+    just_once=True,
+    use_container_width=True,
+    key='stt'
+)
+
+# Procesamiento de pregunta
+if pregunta and pregunta != st.session_state.get("last_question", ""):
+    st.session_state.last_question = pregunta
+    st.session_state.historial.append({"role": "user", "content": pregunta})
+    
+    with st.spinner("Pensando..."):
+        respuesta = consultar_ia(pregunta)
+        st.session_state.historial.append({"role": "assistant", "content": respuesta})
+        
+        # Generar y reproducir audio
+        audio_file = generar_audio(respuesta)
+        if audio_file:
+            autoplay_audio(audio_file)
+            os.remove(audio_file)
+
+# Mostrar historial usando componentes nativos
 st.markdown("---")
 st.subheader("📜 Historial de conversación")
-st.markdown('<div class="chat-container">', unsafe_allow_html=True)
 
-for rol, texto in st.session_state.historial:
-    clase = "chat-user" if rol == "👤" else "chat-ai"
-    emoji = "🧑‍💬" if rol == "👤" else "🤖"
-    st.markdown(f'<div class="chat-message {clase}">{emoji} {texto}</div>', unsafe_allow_html=True)
+for mensaje in st.session_state.historial:
+    if mensaje["role"] == "user":
+        with st.chat_message("user"):
+            st.write(f"🧑‍💬: {mensaje['content']}")
+    else:
+        with st.chat_message("assistant"):
+            st.write(f"🤖: {mensaje['content']}")
 
-st.markdown('</div>', unsafe_allow_html=True)
+# Botón de respaldo para reproducción manual
+if st.session_state.get("historial") and st.session_state.historial[-1]["role"] == "assistant":
+    if st.button("🔊 Reproducir última respuesta", key="reproducir"):
+        if st.session_state.last_audio_id:
+            st.markdown(f"""
+            <script>
+                var audio = document.getElementById("{st.session_state.last_audio_id}");
+                audio.play().catch(e => console.log("Play prevented:", e));
+            </script>
+            """, unsafe_allow_html=True)
+
+# Nota informativa
+st.info("""
+ℹ️ **Nota:** 
+1. Presiona el micrófono y habla claramente
+2. Espera a que el asistente procese tu pregunta
+3. La respuesta se reproducirá automáticamente
+4. Si no escuchas audio, usa el botón "Reproducir última respuesta"
+""")

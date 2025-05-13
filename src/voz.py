@@ -28,3 +28,13 @@ def escuchar_microfono():
         return recognizer.recognize_google(audio, language="es-ES")
     except sr.UnknownValueError:
         return ""
+    
+def generar_audio(texto, filename="respuesta.mp3"):
+    """Genera archivo de audio pero no lo reproduce (para Streamlit Cloud)"""
+    try:
+        tts = gTTS(text=texto, lang='es')
+        tts.save(filename)
+        return filename
+    except Exception as e:
+        print(f"Error al generar audio: {e}")
+        return None
