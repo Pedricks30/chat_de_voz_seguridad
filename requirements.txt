@@ -3,5 +3,4 @@ streamlit-mic-recorder
 python-dotenv
 gtts
 requests
-ffmpeg-python
 python-uuid
