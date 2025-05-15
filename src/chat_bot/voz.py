@@ -9,3 +9,4 @@ def generar_audio(texto, filename="respuesta.mp3"):
     except Exception as e:
         print(f"Error al generar audio: {e}")
         return None
+    

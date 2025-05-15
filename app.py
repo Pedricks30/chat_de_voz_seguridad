@@ -1,99 +1,102 @@
 import streamlit as st
-from streamlit_mic_recorder import speech_to_text
-from dotenv import load_dotenv
-from src.voz import generar_audio
-from src.ia import consultar_ia
-import os
-import base64
-import uuid
+from src.chat_bot.chatbot_ui_interfaz import mostrar_interfaz_chatbot
 
-load_dotenv()
-
-# Configuración de página
-st.set_page_config(page_title="Chatbot de Voz", page_icon="🧠")
-st.title("🧠 Especialista en Seguridad Industrial")
-
-# Inicialización de estado
-if "historial" not in st.session_state:
-    st.session_state.historial = []
-if "last_audio_id" not in st.session_state:
-    st.session_state.last_audio_id = ""
-
-# Función para autoplay
-def autoplay_audio(file_path: str):
-    audio_id = f"audio_{str(uuid.uuid4())}"
-    st.session_state.last_audio_id = audio_id
+def main():
+    st.set_page_config(
+        page_title="Sistema de Seguridad Industrial",
+        page_icon="🛡️",
+        layout="centered",
+        initial_sidebar_state="expanded"
+    )
     
-    with open(file_path, "rb") as f:
-        data = f.read()
-        b64 = base64.b64encode(data).decode()
-        md = f"""
-            <audio id="{audio_id}" autoplay style="display:none">
-            <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
-            </audio>
-            <script>
-                var audio = document.getElementById("{audio_id}");
-                audio.play().catch(e => console.log("Autoplay prevented:", e));
-            </script>
-            """
-        st.components.v1.html(md, height=0)
-
-# Interfaz de usuario
-st.subheader("🎤 Haz tu pregunta por voz")
-
-# Widget de reconocimiento de voz
-pregunta = speech_to_text(
-    language='es',
-    start_prompt="🎙️ Presiona para hablar",
-    stop_prompt="🛑 Detener grabación",
-    just_once=True,
-    use_container_width=True,
-    key='stt'
-)
-
-# Procesamiento de pregunta
-if pregunta and pregunta != st.session_state.get("last_question", ""):
-    st.session_state.last_question = pregunta
-    st.session_state.historial.append({"role": "user", "content": pregunta})
-    
-    with st.spinner("Pensando..."):
-        respuesta = consultar_ia(pregunta)
-        st.session_state.historial.append({"role": "assistant", "content": respuesta})
+    # CSS personalizado mejorado
+    st.markdown("""
+    <style>
+        /* Contenedor principal */
+        .main .block-container {
+            max-width: 800px;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
         
-        # Generar y reproducir audio
-        audio_file = generar_audio(respuesta)
-        if audio_file:
-            autoplay_audio(audio_file)
-            os.remove(audio_file)
+        /* Sidebar estilizado */
+        [data-testid="stSidebar"] {
+            width: 280px !important;
+            padding: 1.5rem;
+        }
+        
+        /* Estilo para los botones */
+        .stButton>button {
+            width: 100%;
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin: 0.25rem 0;
+            transition: all 0.2s;
+        }
+        
+        .stButton>button:hover {
+            background-color: 222831;
+        }
+        
+        /* Mensajes de chat */
+        [data-testid="stChatMessage"] {
+            max-width: 85%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Ajustes para móvil */
+        @media (max-width: 768px) {
+            .main .block-container {
+                max-width: 95% !important;
+                padding: 1rem;
+            }
+            
+            [data-testid="stSidebar"] {
+                width: 220px !important;
+                padding: 0.5rem;
+            }
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # Sidebar con navegación mejorada
+    with st.sidebar:
+   #     st.title("Navegación")
+        
+        # Menú principal
+        #if st.button("🏠 Inicio", use_container_width=True):
+      #      st.session_state.current_page = "inicio"
+       # st.divider()
+        
+        # Módulos
+        st.subheader("Módulos", divider=False)
+        if st.button("🤖 Chatbot IA", use_container_width=True):
+            st.session_state.current_page = "chatbot"
+        
+        if st.button("🧮 Calculadora de Indices", use_container_width=True):
+            st.session_state.current_page = "calculadora"
+        
+        if st.button("📊 ", use_container_width=True):
+            st.session_state.current_page = "reportes"
+        st.divider()
+        
+        # Enlaces externos
+        st.subheader("Recursos", divider=False)
+        st.markdown("[📚 Documentación](https://www.google.com)")
+    
+#LOGINA DE ROUTING
+    if "current_page" not in st.session_state:
+        st.session_state.current_page = "chatbot"
+    
+    if st.session_state.current_page == "chatbot":
+        mostrar_interfaz_chatbot()
+    elif st.session_state.current_page == "calculadora":
+        st.warning("Módulo en desarrollo")
+    elif st.session_state.current_page == "reportes":
+        st.warning("Módulo en desarrollo")
+   # elif st.session_state.current_page == "inicio":
+   #     st.warning("Página de inicio en desarrollo")
 
-# Mostrar historial usando componentes nativos
-st.markdown("---")
-st.subheader("📜 Historial de conversación")
-
-for mensaje in st.session_state.historial:
-    if mensaje["role"] == "user":
-        with st.chat_message("user"):
-            st.write(f"🧑‍💬: {mensaje['content']}")
-    else:
-        with st.chat_message("assistant"):
-            st.write(f"🤖: {mensaje['content']}")
-
-# Botón de respaldo para reproducción manual
-if st.session_state.get("historial") and st.session_state.historial[-1]["role"] == "assistant":
-    if st.button("🔊 Reproducir última respuesta", key="reproducir"):
-        if st.session_state.last_audio_id:
-            st.markdown(f"""
-            <script>
-                var audio = document.getElementById("{st.session_state.last_audio_id}");
-                audio.play().catch(e => console.log("Play prevented:", e));
-            </script>
-            """, unsafe_allow_html=True)
-
-# Nota informativa
-st.info("""
-ℹ️ **Nota:** 
-1. Presiona el micrófono y habla claramente
-2. Espera a que el asistente procese tu pregunta
-3. La respuesta se reproducirá automáticamente
-4. Si no escuchas audio, usa el botón "Reproducir última respuesta"
-""")
+if __name__ == "__main__":
+    main()

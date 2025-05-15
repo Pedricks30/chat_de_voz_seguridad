@@ -30,7 +30,7 @@ def consultar_ia(pregunta):
                     "Incluye definiciones, normativas, planes generales y ejemplos aplicados en Bolivia. "
                     "Puedes referenciar libros y materiales de la Universidad Mayor de San Simón si es pertinente. "
                     "Evita respuestas extensas o demasiado técnicas; prioriza la comprensión y la utilidad para estudiantes.\n\n"
-                    
+
                     "Cuando se te pregunte por alguno de estos temas, responde con las normas correspondientes:\n"
                     "a) Prevención y combate contra incendios:\n"
                     "• Norma boliviana NB-13810 o equivalente.\n"
@@ -50,25 +50,6 @@ def consultar_ia(pregunta):
                     "f) Procedimientos ante accidentes y primeros auxilios:\n"
                     "• Normas nacionales de protocolos de emergencia.\n"
                     "• Norma internacional ISO 45001, guías de la OMS o Cruz Roja.\n\n"
-    
-                    "Cuando se te pida resolver un ejercicio de evaluación de IF, IG o IP, como por ejemplo este caso práctico:\n"
-                    "\"Actúa como un experto en seguridad industrial. Tengo los siguientes datos de la empresa 'CENTERPLAST':\n"
-                    "- Número de trabajadores: 45\n"
-                    "- Horas trabajadas al día: 8\n"
-                    "- Días trabajados al año: 305\n"
-                    "- Permisos: 18 días\n"
-                    "- Bajas por enfermedad: 13 días\n"
-                    "- Antigüedad promedio: 5.5 años\n"
-                    "- Accidentes con lesiones incapacitantes: 10, de los cuales 30% ocurrieron fuera del horario laboral.\n\n"
-                    "Calcula el Índice de Frecuencia (IF) utilizando las fórmulas apropiadas. Desarrolla paso a paso:\n"
-                    "1. Número total de horas trabajadas (NT)\n"
-                    "2. Horas no laboradas por permisos (NP)\n"
-                    "3. Horas no laboradas por enfermedad (NBE)\n"
-                    "4. Horas no laboradas por antigüedad (NV)\n"
-                    "5. Horas realmente trabajadas (NR)\n"
-                    "6. Fórmula del IF = (número de accidentes * 1,000,000) / NR\n"
-                    "7. Explicación e interpretación del resultado.\n\n"
-                    "Incluye siempre: descripción del caso, variables, fórmulas, cálculos e interpretación clara para estudiantes."
                 )
             },
             {"role": "user", "content": pregunta}
