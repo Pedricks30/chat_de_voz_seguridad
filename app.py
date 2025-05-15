@@ -1,6 +1,7 @@
 import streamlit as st
 from src.chat_bot.chatbot_ui_interfaz import mostrar_interfaz_chatbot
 from src.calculadora_indices.calculadora_interfaz import mostrar_interfaz_calculadora
+from src.documentos.documentos_interfaz import mostrar_interfaz_documentos
 
 def main():
     st.set_page_config(
@@ -78,13 +79,9 @@ def main():
         if st.button("🧮 Calculadora de Indices", use_container_width=True):
             st.session_state.current_page = "calculadora"
         
-        if st.button("📊 Normas de Seguridad", use_container_width=True):
-            st.session_state.current_page = "reportes"
+        if st.button("📄 Documentos Corporativos", use_container_width=True):
+            st.session_state.current_page = "documentos"
         st.divider()
-        
-        # Enlaces externos
-        st.subheader("Recursos", divider=False)
-        st.markdown("[📚 Documentación](https://www.google.com)")
 
 #LOGICA DE ROUTING
     if "current_page" not in st.session_state:
@@ -94,8 +91,8 @@ def main():
         mostrar_interfaz_chatbot()
     elif st.session_state.current_page == "calculadora":
         mostrar_interfaz_calculadora()
-    elif st.session_state.current_page == "reportes":
-        st.warning("Módulo en desarrollo")
+    elif st.session_state.current_page == "documentos":
+        mostrar_interfaz_documentos()
    # elif st.session_state.current_page == "inicio":
    #     st.warning("Página de inicio en desarrollo")
 
