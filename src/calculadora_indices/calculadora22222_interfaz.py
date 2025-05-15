@@ -65,9 +65,31 @@ with st.sidebar:
     st.markdown("---")
     st.info("""
     **Fórmulas clave:**
-    - IF = (n × 10⁶) / NR
-    - IG = (J₁ + J₂) × 10⁶ / NR
-    - NR = Horas totales - Horas no laboradas
+    - **Índice de Frecuencia (IF):**
+      - IF = (n × 10⁶) / NR
+        - n = Número de accidentes incapacitantes
+        - NR = Horas realmente trabajadas
+
+    - **Índice de Gravedad (IG):**
+      - IG = (J × 10⁶) / NR
+        - J = Jornadas perdidas totales (J = J₁ + J₂)
+        - J₁ = Muertes × 6000 + Pérdida de brazos × 4500 + Pérdida de piernas × 3000
+        - J₂ = Jornadas perdidas por otras lesiones (días)
+        - NR = Horas realmente trabajadas
+
+    - **Índice de Incidencia (Ii):**
+      - Ii = (n × 1000) / TP
+        - n = Número de accidentes incapacitantes
+        - TP = Número total de trabajadores expuestos al riesgo
+
+    - **Cálculo de Horas:**
+      - NT = Días trabajados × Horas trabajadas × Trabajadores × Meses trabajados
+      - NR = NT - (Nv + Np + Nbe)
+        - NT = Horas totales trabajadas
+        - Nv = Horas no laboradas por vacaciones
+        - Np = Horas no laboradas por permisos
+        - Nbe = Horas no laboradas por enfermedad
+        - NR = Horas realmente trabajadas
     """)
 
 # Función para calcular índices de una sola empresa
@@ -266,6 +288,7 @@ def calcular_multiple_sucursales():
         col1.metric("Total Trabajadores", f"{total_trabajadores:,.0f}")
         col2.metric("IF Global", f"{if_global:,.2f}")
         col3.metric("IG Global", f"{ig_global:,.2f}")
+        col3.metric("Ii (indice de incidencia) Global", f"{ig_global:,.2f}")
 
 # Selección de modo de cálculo
 if modo_calculo == "Empresa Individual":

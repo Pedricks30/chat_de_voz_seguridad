@@ -30,7 +30,6 @@ def consultar_ia(pregunta):
                     "Incluye definiciones, normativas, planes generales y ejemplos aplicados en Bolivia. "
                     "Puedes referenciar libros y materiales de la Universidad Mayor de San Simón si es pertinente. "
                     "Evita respuestas extensas o demasiado técnicas; prioriza la comprensión y la utilidad para estudiantes.\n\n"
-
                     "Cuando se te pregunte por alguno de estos temas, responde con las normas correspondientes:\n"
                     "a) Prevención y combate contra incendios:\n"
                     "• Norma boliviana NB-13810 o equivalente.\n"

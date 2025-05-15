@@ -1,5 +1,6 @@
 import streamlit as st
 from src.chat_bot.chatbot_ui_interfaz import mostrar_interfaz_chatbot
+from src.calculadora_indices.calculadora_interfaz import mostrar_interfaz_calculadora
 
 def main():
     st.set_page_config(
@@ -77,22 +78,22 @@ def main():
         if st.button("🧮 Calculadora de Indices", use_container_width=True):
             st.session_state.current_page = "calculadora"
         
-        if st.button("📊 ", use_container_width=True):
+        if st.button("📊 Normas de Seguridad", use_container_width=True):
             st.session_state.current_page = "reportes"
         st.divider()
         
         # Enlaces externos
         st.subheader("Recursos", divider=False)
         st.markdown("[📚 Documentación](https://www.google.com)")
-    
-#LOGINA DE ROUTING
+
+#LOGICA DE ROUTING
     if "current_page" not in st.session_state:
         st.session_state.current_page = "chatbot"
     
     if st.session_state.current_page == "chatbot":
         mostrar_interfaz_chatbot()
     elif st.session_state.current_page == "calculadora":
-        st.warning("Módulo en desarrollo")
+        mostrar_interfaz_calculadora()
     elif st.session_state.current_page == "reportes":
         st.warning("Módulo en desarrollo")
    # elif st.session_state.current_page == "inicio":
