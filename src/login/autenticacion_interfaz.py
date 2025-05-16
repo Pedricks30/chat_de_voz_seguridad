@@ -55,7 +55,7 @@ def mostrar_login():
         # Encabezado centrado y subtítulo alineado a la izquierda
         st.markdown("""
         <div class="login-header">
-            <h3 style='color: #1a3e72;'>Acceso al Sistema</h3>
+            <h3 style='color: #1a3e72;'>Acceso al Sistema de Seguridad Industrial</h3>
         </div>
         <p class="login-subtitle">Ingrese con su correo institucional</p>
         """, unsafe_allow_html=True)
@@ -82,7 +82,7 @@ def mostrar_login():
         # Mensaje institucional centrado
         st.markdown("""
         <div style='text-align: center; margin-top: 30px; color: #666;'>
-            <small>Sistema de Seguridad Industrial - Facultad de Ingeniería</small>
+            <small>© 2025 Facultad de Ciencias y Tecnología - UMSS | Sistema de Seguridad Industrial </small>
         </div>
         """, unsafe_allow_html=True)
 
