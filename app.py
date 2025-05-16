@@ -3,12 +3,15 @@ from src.login.autenticacion_interfaz import verificar_autenticacion
 from src.chat_bot.chatbot_ui_interfaz import mostrar_interfaz_chatbot
 from src.calculadora_indices.calculadora_interfaz import mostrar_interfaz_calculadora
 from src.documentos.documentos_interfaz import mostrar_interfaz_documentos
+from PIL import Image  # Necesario para cargar la imagen como ícono
 
 def configurar_pagina():
     """Configuración común de la página"""
+    icon_path = "src/img/iconoumss.png"
+    icon_image = Image.open(icon_path)
     st.set_page_config(
         page_title="Sistema de Seguridad Industrial",
-        page_icon="🛡️",
+        page_icon=icon_image,
         layout="centered",
         initial_sidebar_state="expanded"
     )
