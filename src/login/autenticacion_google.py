@@ -1,12 +1,11 @@
 import streamlit as st
-from streamlit_oauth import OAuth2Component
 from .autenticacion_funciones import validar_correo_institucional, configurar_sesion_autenticada
 import os
 from dotenv import load_dotenv
 import jwt
-from PIL import Image
 import requests
 from io import BytesIO
+from PIL import Image
 
 load_dotenv()
 
@@ -20,80 +19,91 @@ def cargar_imagen_perfil(url):
         return Image.open("src/img/default-profile.png")
 
 def login_con_google():
-    # Configuración OAuth2
     CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
     CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
-    REDIRECT_URI = os.getenv("REDIRECT_URI", "https://your-app-name.streamlit.app")  # Ajusta esta URL
+    REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI", "http://localhost:8501")
     
-    # Configuración simplificada sin revoke endpoint
-    oauth2 = OAuth2Component(
-        client_id=CLIENT_ID,
-        client_secret=CLIENT_SECRET,
-        authorize_endpoint="https://accounts.google.com/o/oauth2/v2/auth",
-        token_endpoint="https://oauth2.googleapis.com/token",
-        refresh_token_endpoint="https://oauth2.googleapis.com/token",
-        # Eliminamos el revoke endpoint que causaba el error
-    )
-
-    # Botón personalizado
-    st.markdown("""
+    # Mostrar botón de Google con estilo rojizo y padding ajustado
+    st.markdown(f"""
     <style>
-        .google-btn {
+        .google-btn-custom {{
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background-color: #4285F4;
+            background-color: #EF5350;
             color: white;
             border-radius: 4px;
-            padding: 10px 16px;
+            padding: 0.6rem 1.2rem;  /* Padding aumentado */
             border: none;
-            font-family: 'Roboto', sans-serif;
-            font-size: 14px;
-            font-weight: 500;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 400;
             cursor: pointer;
             width: 100%;
-            margin: 10px 0;
-            transition: background-color 0.3s;
-        }
-        .google-btn:hover {
-            background-color: #3367D6;
+            margin: 0.5rem 0;
+            text-decoration: none;
+            white-space: nowrap;  /* Evita el salto de línea */
+        }}
+        .google-btn-custom:hover {{
+            background-color: #E53935;
             color: white;
-        }
-        .google-icon {
-            margin-right: 10px;
-            height: 18px;
-        }
+        }}
+        .google-icon-custom {{
+            height: 1.2rem;
+            margin-right: 0.75rem;
+            flex-shrink: 0;  /* Evita que el icono se reduzca */
+        }}
     </style>
-    <button onclick="document.getElementById('google-auth').click()" class="google-btn">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" class="google-icon">
-        Iniciar sesión con Google
-    </button>
     """, unsafe_allow_html=True)
 
-    # Botón real oculto
-    result = oauth2.authorize_button(
-        name="",
-        icon="",
-        redirect_uri=REDIRECT_URI,
-        scope="openid email profile",
-        key="google_login",
-        extras_params={"prompt": "select_account"},
-        use_container_width=True,
-    )
+    auth_url = f"https://accounts.google.com/o/oauth2/v2/auth?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code&scope=openid%20email%20profile&prompt=select_account"
+    
+    # Mostrar el botón centrado
+    col1, col2, col3 = st.columns([1, 3, 1])  # Columna central más ancha
+    with col2:
+        st.markdown(f"""
+        <a href="{auth_url}" target="_self">
+            <button class="google-btn-custom">
+                <img src="https://www.google.com/favicon.ico" 
+                     class="google-icon-custom">
+                Iniciar sesión con Google
+            </button>
+        </a>
+        """, unsafe_allow_html=True)
 
-    if result and 'token' in result:
+    # Resto del código de manejo de callback...
+    query_params = st.query_params
+    if 'code' in query_params:
         try:
-            id_token = result['token']['id_token']
+            code = query_params['code']
+            
+            # Intercambiar código por token
+            token_url = "https://oauth2.googleapis.com/token"
+            data = {
+                'code': code,
+                'client_id': CLIENT_ID,
+                'client_secret': CLIENT_SECRET,
+                'redirect_uri': REDIRECT_URI,
+                'grant_type': 'authorization_code'
+            }
+            
+            response = requests.post(token_url, data=data)
+            response.raise_for_status()
+            token_data = response.json()
+            
+            # Obtener información del usuario
+            id_token = token_data['id_token']
             user_info = jwt.decode(id_token, options={"verify_signature": False})
             
             correo = user_info.get("email", "")
             st.session_state['user_info'] = user_info
             
+            # Validar correo institucional y configurar sesión
             if validar_correo_institucional(correo):
                 configurar_sesion_autenticada(correo)
                 st.rerun()
             else:
-                st.error("Solo se permiten correos @est.umss.edu o @udabol.edu.bo")
+                st.error("Solo se permite el acceso con correos institucionales (@est.umss.edu o @udabol.edu.bo)")
                 st.session_state.clear()
                 
         except Exception as e:
