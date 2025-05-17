@@ -3,3 +3,5 @@ streamlit-mic-recorder
 python-dotenv
 gtts
 requests
+streamlit_oauth
+pyjwt
