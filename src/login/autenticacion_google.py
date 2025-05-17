@@ -57,7 +57,16 @@ def login_con_google():
     </style>
     """, unsafe_allow_html=True)
 
-    auth_url = f"https://accounts.google.com/o/oauth2/v2/auth?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code&scope=openid%20email%20profile&prompt=select_account"
+    # URL de autenticación con tus parámetros específicos
+    auth_url = (
+        "https://accounts.google.com/o/oauth2/v2/auth?"
+        f"client_id={CLIENT_ID}&"
+        f"redirect_uri={REDIRECT_URI}&"
+        "response_type=code&"
+        "scope=openid%20email%20profile&"
+        "access_type=offline&"
+        "prompt=select_account"
+    )
     
     # Mostrar el botón centrado
     col1, col2, col3 = st.columns([1, 3, 1])
@@ -77,7 +86,7 @@ def login_con_google():
         try:
             code = query_params['code']
             
-            # Intercambiar código por token
+            # Intercambiar código por token (usando tu token_uri específico)
             token_url = "https://oauth2.googleapis.com/token"
             data = {
                 'code': code,
@@ -102,7 +111,7 @@ def login_con_google():
                 correo = idinfo['email']
                 st.session_state['user_info'] = {
                     'email': idinfo['email'],
-                    'name': idinfo.get('name', ''),
+                    'name': idinfo.get('name', correo.split('@')[0]),
                     'picture': idinfo.get('picture', '')
                 }
                 
@@ -111,7 +120,7 @@ def login_con_google():
                     configurar_sesion_autenticada(correo)
                     st.rerun()
                 else:
-                    st.error("Solo se permite el acceso con correos institucionales (@est.umss.edu o @udabol.edu.bo)")
+                    st.error("Solo se permite el acceso con correos @est.umss.edu o @udabol.edu.bo")
                     st.session_state.clear()
                     
             except ValueError as e:
@@ -119,6 +128,6 @@ def login_con_google():
                 st.session_state.clear()
                 
         except requests.exceptions.RequestException as e:
-            st.error(f"Error de conexión: {str(e)}")
+            st.error(f"Error de conexión: {e.response.text if hasattr(e, 'response') else str(e)}")
         except Exception as e:
             st.error(f"Error inesperado: {str(e)}")
