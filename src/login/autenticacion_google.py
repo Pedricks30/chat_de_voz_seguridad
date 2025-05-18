@@ -4,14 +4,8 @@ from .autenticacion_funciones import validar_correo_institucional, configurar_se
 from PIL import Image
 import os
 
-# Configuración básica de la página
-def configurar_pagina():
-    icon_path = "src/img/iconoumss.png"
-    icon_image = Image.open(icon_path)
-    st.set_page_config(page_title="Sistema de Seguridad Industrial", page_icon=icon_image)
 
 def login_con_google():
-    configurar_pagina()
     
     # Autenticación con google-auth-st
     add_auth()  # Esto manejará todo el flujo OAuth
