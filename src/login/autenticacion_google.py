@@ -7,7 +7,6 @@ import os
 
 
 def login_con_google():
-    configurar_pagina()
     
     # Autenticación con google-auth-st
     add_auth()  # Esto manejará todo el flujo OAuth
