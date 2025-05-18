@@ -2,6 +2,7 @@ import streamlit as st
 from src.chat_bot.chatbot_ui_interfaz import mostrar_interfaz_chatbot
 from src.calculadora_indices.calculadora_interfaz import mostrar_interfaz_calculadora
 from src.documentos.documentos_interfaz import mostrar_interfaz_documentos
+import os
 from PIL import Image
 
 def configurar_pagina():
@@ -15,41 +16,39 @@ def configurar_pagina():
     
     st.markdown("""
     <style>
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
+        /* Estilos para los botones del sidebar */
+        .stButton>button {
+            width: 100%;
+            justify-content: left;
+            padding: 0.5rem 1rem;
         }
-        .user-avatar {
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border: 2px solid #1a3e72;
+        /* Ajustes para el título de los módulos */
+        .sidebar .sidebar-content .stSubheader {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
         }
-        .user-info {
-            flex: 1;
-        }
-        .user-name {
+        /* Estilo para el div del nombre del sistema */
+        .system-name {
             font-weight: 600;
-            margin-bottom: 0;
+            font-size: 1rem;
+            text-align: center;
+            margin: 1rem 0;
         }
+        /* Sidebar a la mitad en móviles */
+        @media (max-width: 768px) {
+            section[data-testid="stSidebar"] {
+                width: 50% !important;
+                min-width: 200px !important;
+            }
+        }        
     </style>
     """, unsafe_allow_html=True)
 
 def mostrar_sidebar():
-    """Sidebar simplificado sin autenticación"""
+    """Sidebar simplificado sin icono"""
     with st.sidebar:
-        # Mostrar logo o información básica
-        st.markdown("""
-        <div class="user-profile">
-            <img src="src/img/iconoumss.png" class="user-avatar">
-            <div class="user-info">
-                <div class="user-name">Sistema de Seguridad</div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        # Solo el nombre del sistema centrado
+        st.markdown("<div class='system-name'>Sistema de Seguridad</div>", unsafe_allow_html=True)
         
         st.divider()
         
@@ -57,7 +56,7 @@ def mostrar_sidebar():
         st.subheader("Módulos")
         paginas = {
             "🤖 Chatbot IA": "chatbot",
-            "🧮 Calculadora": "calculadora",
+            "🧮 Calculadora de Indices": "calculadora",
             "📄 Documentos": "documentos"
         }
         
