@@ -3,5 +3,3 @@ streamlit-mic-recorder
 python-dotenv
 gtts
 requests
-google-auth-st
-Pillow
