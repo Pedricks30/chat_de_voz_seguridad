@@ -1,6 +1,6 @@
 # Ignorar la carpeta de entorno virtual
 env/
-
+.streamlit/secrets.toml
 # Ignora la carpetas de variables de entorno
 .env
 

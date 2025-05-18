@@ -1,5 +1,5 @@
 import streamlit as st
-from src.login.autenticacion_interfaz import verificar_autenticacion
+from src.login.autenticacion_google import login_con_google
 from src.chat_bot.chatbot_ui_interfaz import mostrar_interfaz_chatbot
 from src.calculadora_indices.calculadora_interfaz import mostrar_interfaz_calculadora
 from src.documentos.documentos_interfaz import mostrar_interfaz_documentos
@@ -46,6 +46,15 @@ def configurar_pagina():
             display: flex;
             align-items: center;
             gap: 5px;
+        }
+        
+        /* Estilo para el botón de Google Auth */
+        .stButton>button {
+            background-color: #EF5350 !important;
+            color: white !important;
+        }
+        .stButton>button:hover {
+            background-color: #E53935 !important;
         }
     </style>
     """, unsafe_allow_html=True)
@@ -94,8 +103,14 @@ def mostrar_sidebar():
                 st.rerun()
 
 def main():
+    # Configuración inicial
     configurar_pagina()
-    verificar_autenticacion()
+    
+    # Autenticación con google-auth-st
+    if not login_con_google():
+        st.stop()  # Detiene la ejecución si no está autenticado
+    
+    # Mostrar sidebar y contenido principal
     mostrar_sidebar()
     
     # Routing
