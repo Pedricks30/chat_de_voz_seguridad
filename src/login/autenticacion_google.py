@@ -22,7 +22,7 @@ def cargar_imagen_perfil(url):
 def login_con_google():
     CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
     CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
-    REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI", "http://localhost:8501")
+    REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
     
     # Mostrar botón de Google con estilo rojizo
     st.markdown(f"""
