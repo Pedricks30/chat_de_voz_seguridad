@@ -1,8 +1,8 @@
 import streamlit as st
-from src.login.autenticacion_interfaz import verificar_autenticacion
 from src.chat_bot.chatbot_ui_interfaz import mostrar_interfaz_chatbot
 from src.calculadora_indices.calculadora_interfaz import mostrar_interfaz_calculadora
 from src.documentos.documentos_interfaz import mostrar_interfaz_documentos
+import os
 from PIL import Image
 
 def configurar_pagina():
@@ -16,66 +16,47 @@ def configurar_pagina():
     
     st.markdown("""
     <style>
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
+        /* Estilos para los botones del sidebar */
+        .stButton>button {
+            width: 100%;
+            justify-content: left;
+            padding: 0.5rem 1rem;
         }
-        .user-avatar {
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border: 2px solid #1a3e72;
+        /* Ajustes para el título de los módulos */
+        .sidebar .sidebar-content .stSubheader {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
         }
-        .user-info {
-            flex: 1;
-        }
-        .user-name {
+        /* Estilo para el div del nombre del sistema */
+        .system-name {
             font-weight: 600;
-            margin-bottom: 0;
+            font-size: 1rem;
+            text-align: center;
+            margin: 1rem 0;
         }
-        .user-email {
-            font-size: 0.8rem;
-            color: #666;
-        }
-        .user-institution {
-            font-size: 0.8rem;
-            color: #1a3e72;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
+        /* Sidebar a la mitad en móviles */
+        @media (max-width: 768px) {
+            section[data-testid="stSidebar"] {
+                width: 50% !important;
+                min-width: 200px !important;
+            }
+        }        
     </style>
     """, unsafe_allow_html=True)
 
 def mostrar_sidebar():
-    """Sidebar con perfil de usuario"""
+    """Sidebar simplificado sin icono"""
     with st.sidebar:
-        if st.session_state.get('authenticated'):
-            user_info = st.session_state.get('user_info', {})
-            
-            st.markdown(f"""
-            <div class="user-profile">
-                <img src="{user_info.get('picture', 'src/img/default-profile.png')}" 
-                     class="user-avatar" 
-                     onerror="this.src='src/img/default-profile.png'">
-                <div class="user-info">
-                    <div class="user-name">{user_info.get('name', st.session_state.get('user_name', 'Usuario'))}</div>
-                    <div class="user-email">{st.session_state.get('user_email', '')}</div>
-                    <div class="user-institution">🔹 {st.session_state.get('institucion', '')}</div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.divider()
+        # Solo el nombre del sistema centrado
+        st.markdown("<div class='system-name'>Sistema de Seguridad</div>", unsafe_allow_html=True)
+        
+        st.divider()
         
         # Menú de navegación
         st.subheader("Módulos")
         paginas = {
             "🤖 Chatbot IA": "chatbot",
-            "🧮 Calculadora": "calculadora",
+            "🧮 Calculadora de Indices": "calculadora",
             "📄 Documentos": "documentos"
         }
         
@@ -83,19 +64,17 @@ def mostrar_sidebar():
             if st.button(texto, use_container_width=True):
                 st.session_state.current_page = pagina
         
+        # Opcional: Mantener panel admin si es necesario
         if st.session_state.get('rol') == 'admin':
+            st.divider()
             if st.button("👨‍💼 Panel Admin", use_container_width=True):
                 st.session_state.current_page = "admin"
-        
-        if st.session_state.get('authenticated'):
-            st.divider()
-            if st.button("🚪 Cerrar sesión", type="secondary", use_container_width=True):
-                st.session_state.clear()
-                st.rerun()
 
 def main():
+    # Configuración inicial
     configurar_pagina()
-    verificar_autenticacion()
+    
+    # Mostrar sidebar y contenido principal
     mostrar_sidebar()
     
     # Routing
