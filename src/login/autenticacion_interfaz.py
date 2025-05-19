@@ -1,7 +1,6 @@
 import streamlit as st
 from pathlib import Path
 from .autenticacion_google import login_con_google
-from PIL import Image
 
 def mostrar_login():
     """Interfaz de login con diseño mejorado y responsive"""
