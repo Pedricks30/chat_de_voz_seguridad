@@ -1,12 +1,14 @@
+import base64
+import uuid
 from gtts import gTTS
-    
+import os
+
 def generar_audio(texto, filename="respuesta.mp3"):
-    """Genera archivo de audio pero no lo reproduce (para Streamlit Cloud)"""
-    try:
-        tts = gTTS(text=texto, lang='es')
-        tts.save(filename)
-        return filename
-    except Exception as e:
-        print(f"Error al generar audio: {e}")
-        return None
-    
+    tts = gTTS(text=texto, lang="es")
+    tts.save(filename)
+    with open(filename, "rb") as f:
+        audio_bytes = f.read()
+    os.remove(filename)
+    audio_b64 = base64.b64encode(audio_bytes).decode()
+    audio_id = f"audio_{uuid.uuid4().hex}"
+    return audio_b64, audio_id

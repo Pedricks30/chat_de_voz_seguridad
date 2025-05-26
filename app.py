@@ -85,8 +85,6 @@ def main():
         mostrar_interfaz_calculadora()
     elif pagina == "documentos":
         mostrar_interfaz_documentos()
-    elif pagina == "admin":
-        st.title("Panel de Administración")
 
 if __name__ == "__main__":
     main()
