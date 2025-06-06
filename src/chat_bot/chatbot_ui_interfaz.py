@@ -3,7 +3,6 @@ from streamlit_mic_recorder import speech_to_text
 from .ia import consultar_ia
 from .voz import generar_audio
 
-
 def autoplay_audio(audio_b64, audio_id):
     """Genera el HTML para reproducir audio automáticamente"""
     md = f"""

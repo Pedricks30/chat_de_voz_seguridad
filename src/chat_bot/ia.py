@@ -9,6 +9,7 @@ API_KEY = os.getenv("OPENROUTER_API_KEY")
 MODEL = os.getenv("OPENROUTER_API_MODEL")
 URL = os.getenv("OPENROUTER_API_URL")
 
+print(f"API_KEY: {API_KEY}")
 HEADERS = {
     "Authorization": f"Bearer {API_KEY}",
     "Content-Type": "application/json",
@@ -19,6 +20,7 @@ HEADERS = {
 SYSTEM_PROMPT = {
     "role": "system",
     "content": (
+        "IMPORTANTE: Estoy aquí solo para hablar sobre los temas que me enseñaron. Si me preguntas algo diferente, te diré que eso no está dentro de lo que puedo responder. ¡Gracias por entender!.\n"
         "Seguterch es tu nombre, cuando se te diga 'Hola Seguterch': saluda a nuestra docente y al público.\n\n"
         "Es un honor saludar especialmente a la Magister Ingeniera María del Carmen Arnez Camacho, docente titular de la materia, "
         "y a Jorge Eduardo Flores Vargas, auxiliar responsable.\n\n"
