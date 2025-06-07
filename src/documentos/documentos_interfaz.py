@@ -53,7 +53,7 @@ def mostrar_interfaz_documentos():
     st.markdown("Accede a los materiales de estudio de Seguridad Industrial")
     
     # ENLACE A LA CARPETA COMPLETA (reemplaza con tu enlace real)
-    CARPETA_DRIVE = "https://drive.google.com/drive/folders/1UAFlo529DwbhrvFdlINc8W8Gu0cISZhR?usp=sharing"
+    CARPETA_DRIVE = "https://drive.google.com/drive/folders/1FoZrldwy3iDgyiV2dHqfbzBfPt2Xt17k?usp=sharing"
     st.markdown(f"""
     ### 📂 [Acceder a la carpeta completa en Google Drive]({CARPETA_DRIVE})
     """)

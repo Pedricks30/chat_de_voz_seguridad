@@ -9,7 +9,6 @@ API_KEY = os.getenv("OPENROUTER_API_KEY")
 MODEL = os.getenv("OPENROUTER_API_MODEL")
 URL = os.getenv("OPENROUTER_API_URL")
 
-print(f"API_KEY: {API_KEY}")
 HEADERS = {
     "Authorization": f"Bearer {API_KEY}",
     "Content-Type": "application/json",
