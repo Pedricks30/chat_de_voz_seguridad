@@ -57,7 +57,7 @@ def mostrar_sidebar():
         paginas = {
             "🤖 Chatbot IA": "chatbot",
             "🧮 Calculadora de Indices": "calculadora",
-            "📄 Biblioteca UMSS": "documentos"
+            "📚 Normas": "documentos"
         }
         
         for texto, pagina in paginas.items():

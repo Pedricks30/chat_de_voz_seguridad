@@ -49,7 +49,7 @@ def mostrar_interfaz_documentos():
     """Interfaz principal para los documentos"""
     configurar_estilos()
     
-    st.title("📚 Biblioteca de Documentos UMSS")
+    st.title("📚 Biblioteca de Normas")
     st.markdown("Accede a los materiales de estudio de Seguridad Industrial")
     
     # ENLACE A LA CARPETA COMPLETA (reemplaza con tu enlace real)
