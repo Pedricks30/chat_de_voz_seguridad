@@ -5,8 +5,8 @@ import os
 import re  # nuevo: para limpiar texto
 
 def limpiar_texto_para_audio(texto):
-    # Quita los asteriscos (*) y reemplaza dobles con comillas si lo deseas
-    texto = re.sub(r'\*+','\#+', '', texto)
+    # Elimina todos los asteriscos (*) y almohadillas (#)
+    texto = re.sub(r'[\*#]+', '', texto)
     return texto
 
 def generar_audio(texto, filename="respuesta.mp3"):
